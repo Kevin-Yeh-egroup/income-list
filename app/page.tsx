@@ -4,27 +4,36 @@ import { useState } from 'react';
 import UploadPage from '@/components/upload-page';
 import LoadingPage from '@/components/loading-page';
 import ResultPage from '@/components/result-page';
+import { IncomeItem } from '@/lib/income-types';
+import { parseIncomeFile } from '@/lib/income-parser';
 
 type AppStep = 'upload' | 'loading' | 'result';
 
 export default function Home() {
   const [step, setStep] = useState<AppStep>('upload');
-  const [realEstateCount, setRealEstateCount] = useState(0);
-  const [personalPropertyCount, setPersonalPropertyCount] = useState(0);
+  const [incomeItems, setIncomeItems] = useState<IncomeItem[]>([]);
 
-  const handleFileSelect = () => {
+  const handleFileSelect = async (file: File | null) => {
+    if (!file) {
+      return;
+    }
+
     setStep('loading');
-    
-    // 5秒後進入結果頁面，並生成模擬數據
-    setTimeout(() => {
-      // 模擬數據：隨機生成不動產和動產筆數
-      const realEstate = Math.floor(Math.random() * 10) + 1; // 1-10筆
-      const personalProperty = Math.floor(Math.random() * 5) + 1; // 1-5筆
+
+    try {
+      // 解析檔案
+      const parsedItems = await parseIncomeFile(file);
       
-      setRealEstateCount(realEstate);
-      setPersonalPropertyCount(personalProperty);
+      // 模擬處理時間（實際解析可能需要一些時間）
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      
+      setIncomeItems(parsedItems);
       setStep('result');
-    }, 5000);
+    } catch (error) {
+      console.error('檔案解析錯誤:', error);
+      alert('檔案解析失敗，請檢查檔案格式');
+      setStep('upload');
+    }
   };
 
   return (
@@ -33,12 +42,10 @@ export default function Home() {
       {step === 'loading' && <LoadingPage />}
       {step === 'result' && (
         <ResultPage
-          realEstateCount={realEstateCount}
-          personalPropertyCount={personalPropertyCount}
+          incomeItems={incomeItems}
           onReset={() => {
             setStep('upload');
-            setRealEstateCount(0);
-            setPersonalPropertyCount(0);
+            setIncomeItems([]);
           }}
         />
       )}
