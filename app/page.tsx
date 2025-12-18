@@ -14,15 +14,20 @@ export default function Home() {
   const [incomeItems, setIncomeItems] = useState<IncomeItem[]>([]);
 
   const handleFileSelect = async (file: File | null) => {
-    if (!file) {
-      return;
-    }
-
     setStep('loading');
 
     try {
-      // 解析檔案
-      const parsedItems = await parseIncomeFile(file);
+      let parsedItems;
+      
+      if (file) {
+        // 如果有檔案，解析檔案
+        parsedItems = await parseIncomeFile(file);
+      } else {
+        // 如果沒有檔案，直接使用模擬數據
+        // 這裡可以替換為實際的預設檔案處理邏輯
+        const mockFile = new File([''], 'default-income-list.xlsx', { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        parsedItems = await parseIncomeFile(mockFile);
+      }
       
       // 模擬處理時間（實際解析可能需要一些時間）
       await new Promise((resolve) => setTimeout(resolve, 2000));

@@ -28,7 +28,7 @@ export default function LoadingPage() {
           {/* Header */}
           <div className="text-center">
             <h2 className="text-2xl font-bold text-foreground">正在讀取中</h2>
-            <p className="text-sm text-muted-foreground mt-1">解析財產清冊...</p>
+            <p className="text-sm text-muted-foreground mt-1">解析所得清單...</p>
           </div>
 
           {/* Animated Spinner */}
@@ -61,7 +61,8 @@ export default function LoadingPage() {
           {/* Status Messages */}
           <div className="text-center text-xs text-muted-foreground space-y-1">
             <p>✓ 檔案讀取中</p>
-            <p>⏳ 數據解析中</p>
+            <p>⏳ 辨識所得項目中</p>
+            <p>⏳ 計算稅務資訊中</p>
             <p>準備顯示結果...</p>
           </div>
         </div>
